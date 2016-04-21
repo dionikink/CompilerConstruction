@@ -2,7 +2,7 @@ package pp.block1.cc.test;
 
 import org.junit.Test;
 
-import pp.block1.cc.antlr.Example;
+import pp.block1.cp.queue.Example;
 
 public class ExampleTest {
 	private static LexerTester tester = new LexerTester(Example.class);

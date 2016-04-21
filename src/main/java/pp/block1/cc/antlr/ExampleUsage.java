@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
+import pp.block1.cp.queue.Example;
 
 public class ExampleUsage {
 	public static void main(String[] args) {
