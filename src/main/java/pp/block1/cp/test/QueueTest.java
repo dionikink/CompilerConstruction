@@ -15,55 +15,54 @@ public class QueueTest {
     public void testQueue() {
         QueueThread prod1 = new QueueThread(true);
         QueueThread prod2 = new QueueThread(true);
-        QueueThread con1 = new QueueThread(false);
-        QueueThread con2 = new QueueThread(false);
+        QueueThread prod3 = new QueueThread(true);
+
+        QueueThread cons1 = new QueueThread(false);
+        QueueThread cons2 = new QueueThread(false);
+        QueueThread cons3 = new QueueThread(false);
+
         prod1.start();
         prod2.start();
-        con1.start();
-        con2.start();
+        prod3.start();
+        cons1.start();
+        cons2.start();
+        cons3.start();
+
         try {
-            Thread.sleep(100);
+            prod1.join();
+            prod2.join();
+            prod3.join();
+            cons1.join();
+            cons2.join();
+            cons3.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(prod1.getTotal());
-        System.out.println(prod2.getTotal());
-        System.out.println(con1.getTotal());
-        System.out.println(con2.getTotal());
+
+        System.out.println(queue.getLength());
     }
 
-    private class QueueThread extends Thread{
-        boolean isProd;
-        int total;
-        private QueueThread(boolean isProd) {
-            this.isProd = isProd;
-        }
+    public class QueueThread extends Thread {
+        private boolean isProd;
 
-        private int getTotal() {
-            return total;
+        public QueueThread(boolean isProd) {
+            this.isProd = isProd;
         }
 
         @Override
         public void run() {
-            if (isProd) {
-                for (int i = 0; i < 5; i++) {
-                    total++;
+
+            if(isProd) {
+                for(int i = 0; i <= 1000; i++) {
                     queue.push(i);
                 }
+
             } else {
-                while (queue.getLength() < 1) {
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                while (total < 5) {
-                    total++;
+                for(int i = 0; i <= 50000; i++) {
                     try {
                         queue.pull();
                     } catch (QueueEmptyException e) {
-                        System.err.println("Queue Empty");
+                        e.printStackTrace();
                     }
                 }
             }
