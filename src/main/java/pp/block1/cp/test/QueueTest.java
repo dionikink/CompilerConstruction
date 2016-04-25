@@ -62,7 +62,7 @@ public class QueueTest {
                     try {
                         queue.pull();
                     } catch (QueueEmptyException e) {
-                        e.printStackTrace();
+
                     }
                 }
             }

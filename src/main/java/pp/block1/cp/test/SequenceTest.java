@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import pp.block1.cp.block1.UnsafeSequence;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by Jens on 20-4-2016.
  *
@@ -15,68 +18,45 @@ public class SequenceTest {
     public void testSeq() {
         SeqThread t1 = new SeqThread();
         SeqThread t2 = new SeqThread();
-        SeqThread t3 = new SeqThread();
-        SeqThread t4 = new SeqThread();
-        SeqThread t5 = new SeqThread();
-        SeqThread t6 = new SeqThread();
-        SeqThread t7 = new SeqThread();
-        SeqThread t8 = new SeqThread();
         t1.start();
         t2.start();
-        t3.start();
-        t4.start();
-        t5.start();
-        t6.start();
-        t7.start();
-        t8.start();
-        int one = t1.getNext();
-        int two = t2.getNext();
-        int three = t3.getNext();
-        int four = t4.getNext();
-        int five = t5.getNext();
-        int six = t6.getNext();
-        int seven = t7.getNext();
-        int eight = t8.getNext();
-        int[] ints = {one, two, three, four, five, six, seven, eight};
-        for (int j = 0; j < ints.length; j++) {
-            for (int i = 0; i < ints.length; i++) {
-                if (ints[j] == ints[i] && j != i) {
-                    System.out.println(one);
-                    System.out.println(two);
-                    System.out.println(three);
-                    System.out.println(four);
-                    System.out.println(five);
-                    System.out.println(six);
-                    System.out.println(seven);
-                    System.out.println(eight);
-                    Assert.fail("Failed");
-                }
-            }
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
         t1.setFalse();
         t2.setFalse();
-        t3.setFalse();
-        t4.setFalse();
-        t5.setFalse();
-        t6.setFalse();
-        t7.setFalse();
-        t8.setFalse();
+        ArrayList<Integer> one = t1.getNext();
+        ArrayList<Integer> two = t2.getNext();
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < one.size(); i++) {
+            if (one.get(i).equals(two.get(i))) {
+                Assert.fail();
+            }
+        }
     }
 
 
     private class SeqThread extends Thread {
-        private int next;
+        private ArrayList<Integer> next = new ArrayList<>();
         private boolean done = false;
         public void run() {
+            int i = 0;
             while (!done) {
-                this.next = sequence.getNext();
+                this.next.add(i, sequence.getNext());
+                i++;
             }
         }
         private void setFalse() {
             done = true;
         }
-        private int getNext() {
+        private ArrayList<Integer> getNext() {
             return next;
         }
     }
