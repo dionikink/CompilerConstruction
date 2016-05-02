@@ -7,7 +7,7 @@ package pp.block1.cp.block1;
 public class UnsafeSequence {
     private int value;
 
-    public int getNext() {
+    public synchronized int getNext() {
         return value++;
     }
 }
