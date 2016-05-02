@@ -1,3 +1,4 @@
+package pp.block2.cp.lockcoupling;
 interface List<T> {
 	public void insert(int pos, T val);
 	public void add(T val);

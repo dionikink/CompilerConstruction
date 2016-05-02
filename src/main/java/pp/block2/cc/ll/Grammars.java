@@ -4,6 +4,7 @@
 package pp.block2.cc.ll;
 
 import pp.block2.cc.NonTerm;
+import pp.block2.cc.Symbol;
 import pp.block2.cc.SymbolFactory;
 import pp.block2.cc.Term;
 
@@ -36,4 +37,21 @@ public class Grammars {
 		g.addRule(mod, adj);
 		return g;
 	}
+
+	public static Grammar makeIf() {
+        NonTerm stat = new NonTerm("Stat");
+        NonTerm elsepart = new NonTerm("ElsePart");
+        SymbolFactory fact = new SymbolFactory(If.class);
+        Term assign = fact.getTerminal(If.ASSIGN);
+        Term iff = fact.getTerminal(If.IF);
+        Term cond = fact.getTerminal(If.COND);
+        Term then = fact.getTerminal(If.THEN);
+        Term elsse = fact.getTerminal(If.ELSE);
+        Grammar g = new Grammar(stat);
+        g.addRule(stat, assign);
+        g.addRule(stat, iff, cond, then, stat, elsepart);
+        g.addRule(elsepart, elsse, stat);
+        g.addRule(elsepart, Symbol.EMPTY);
+        return g;
+    }
 }

@@ -15,20 +15,76 @@ import org.junit.Test;
 import pp.block2.cc.NonTerm;
 import pp.block2.cc.Symbol;
 import pp.block2.cc.Term;
-import pp.block2.cc.ll.Grammar;
-import pp.block2.cc.ll.Grammars;
+import pp.block2.cc.ll.*;
 import pp.block2.cc.ll.If;
-import pp.block2.cc.ll.LLCalc;
-import pp.block2.cc.ll.Rule;
-import pp.block2.cc.ll.Sentence;
 
 public class LLCalcTest {
+
+	@Test
+    public void testIf() {
+        Grammar g = Grammars.makeIf();
+
+        NonTerm stat = g.getNonterminal("Stat");
+        NonTerm elsePart = g.getNonterminal("ElsePart");
+
+        Term iff = g.getTerminal(If.IF);
+        Term cond = g.getTerminal(If.COND);
+        Term then = g.getTerminal(If.THEN);
+        Term elsse = g.getTerminal(If.ELSE);
+        Term assign = g.getTerminal(If.ASSIGN);
+        Term eof = Symbol.EOF;
+        Term empty = Symbol.EMPTY;
+
+        LLCalc calc = createCalc(g);
+        // Start filling the answers
+        Set<Term> firstStat = new HashSet<>();
+        firstStat.add(assign);
+        firstStat.add(iff);
+        Set<Term> firstElsePart = new HashSet<>();
+        firstElsePart.add(elsse);
+        firstElsePart.add(empty);
+        Map<Symbol, Set<Term>> first = calc.getFirst();
+
+        assertEquals(firstStat, first.get(stat));
+        assertEquals(firstElsePart, first.get(elsePart));
+
+        Map<NonTerm, Set<Term>> follow = calc.getFollow();
+        Set<Term> followStat = new HashSet<>();
+        followStat.add(eof);
+        followStat.add(elsse);
+        Set<Term> followElsePart = new HashSet<>();
+        followElsePart.add(eof);
+        followElsePart.add(elsse);
+		assertEquals(followStat, follow.get(stat));
+        assertEquals(followElsePart, follow.get(elsePart));
+
+        Map<Rule, Set<Term>> firstp = calc.getFirstp();
+		List<Rule> elsePartRules = g.getRules(elsePart);
+		List<Rule> statRules = g.getRules(stat);
+
+        Set<Term> firstpep0 = new HashSet<>();
+        firstpep0.add(elsse);
+        Set<Term> firstpep1 = new HashSet<>();
+		firstpep1.add(elsse);
+        firstpep1.add(empty);
+        firstpep1.add(eof);
+		Set<Term> firstpstat1 = new HashSet<>();
+		firstpstat1.add(iff);
+		Set<Term> firstpstat0 = new HashSet<>();
+		firstpstat0.add(assign);
+
+        assertEquals(firstpep0, firstp.get(elsePartRules.get(0)));
+        assertEquals(firstpep1, firstp.get(elsePartRules.get(1)));
+		assertEquals(firstpstat0, firstp.get(statRules.get(0)));
+		assertEquals(firstpstat1, firstp.get(statRules.get(1)));
+	}
+
 	/** Tests the LL-calculator for the Sentence grammar. */
 	@Test
 	public void testSentenceOrig() {
 		Grammar g = Grammars.makeSentence();
 		// Without the last (recursive) rule, the grammar is LL-1
-		assertTrue(createCalc(g).isLL1());
+        assertTrue(createCalc(g).isLL1());
 	}
 
 	@Test
@@ -72,7 +128,7 @@ public class LLCalcTest {
 
 	/** Creates an LL1-calculator for a given grammar. */
 	private LLCalc createCalc(Grammar g) {
-		return ... // your implementation of LLCalc (Ex. 2-CC.5)
+		return new LLCalcert(g); // your implementation of LLCalc (Ex. 2-CC.5)
 	}
 
 	@SuppressWarnings("unchecked")

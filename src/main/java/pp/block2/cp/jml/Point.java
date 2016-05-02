@@ -1,3 +1,4 @@
+package pp.block2.cp.jml;
 public class Point {
 	/*@ spec_public */private int x;
 	/*@ spec_public */private int y = 1;
