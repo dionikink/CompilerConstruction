@@ -1,9 +1,6 @@
 package pp.block2.cc.ll;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Token;
@@ -28,6 +25,8 @@ public class GenericLLParser implements Parser {
 	/** Token list of the currently parsed input. */
 	private List<? extends Token> tokens;
 
+	private Map<Rule, Set<Term>> firstp;
+
 
 	public GenericLLParser(Grammar g) {
 		this.g = g;
@@ -38,6 +37,7 @@ public class GenericLLParser implements Parser {
 	public AST parse(Lexer lexer) throws ParseException {
 		this.tokens = lexer.getAllTokens();
 		this.index = 0;
+		this.firstp = calc.getFirstp();
 		return parse(this.g.getStart());
 	}
 
@@ -54,8 +54,19 @@ public class GenericLLParser implements Parser {
 	 * because the token stream does not contain the expected symbols
 	 */
 	private AST parse(Symbol symb) throws ParseException {
-		// fill in
-        return null;
+		AST result;
+
+		if (symb instanceof NonTerm) {
+			result = parse(lookup((NonTerm) symb));
+		} else {
+			Token token = next();
+			if (((Term) symb).getTokenType() != token.getType()) {
+				throw (new ParseException("fail"));
+			} else {
+				result = new AST((Term) symb, token);
+			}
+		}
+        return result;
 	}
 
 	/** Parses the start of the token stream according to a given
@@ -68,8 +79,14 @@ public class GenericLLParser implements Parser {
 	 * because the token stream does not contain the expected symbols
 	 */
 	private AST parse(Rule rule) throws ParseException {
-		// fill in
-        return null;
+		NonTerm nonTerm = rule.getLHS();
+		AST result = new AST(nonTerm);
+		for (Symbol s : rule.getRHS()) {
+			if (s != Symbol.EMPTY) {
+				result.addChild(parse(s));
+			}
+		}
+        return result;
 	}
 
 	/** Uses the lookup table to look up the rule to which
@@ -131,7 +148,27 @@ public class GenericLLParser implements Parser {
 
 	/** Constructs the {@link #ll1Table}. */
 	private Map<NonTerm, Map<Term, Rule>> calcLL1Table() {
-		// fill in
-		return null;
+		Map<NonTerm, Map<Term, Rule>> result = new HashMap<>();
+		Set<NonTerm> nonTerms = g.getNonterminals();
+		Set<Term> terms = g.getTerminals();
+		List<Rule> rules;
+		for (NonTerm nt : nonTerms) {
+			Map<Term, Rule> termRuleMap = new HashMap<>();
+			for (Term t : terms) {
+				termRuleMap.put(t, null);
+			}
+			rules = g.getRules(nt);
+			for (Rule r : rules) {
+				Set<Term> wSet = firstp.get(r);
+				for (Term w : wSet) {
+					termRuleMap.replace(w, r);
+				}
+				if (firstp.get(r).contains(Symbol.EOF)) {
+					termRuleMap.put(Symbol.EOF, r);
+				}
+			}
+			result.put(nt, termRuleMap);
+		}
+		return result;
 	}
 }

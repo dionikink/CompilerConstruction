@@ -12,12 +12,10 @@ import org.antlr.v4.runtime.Lexer;
 import org.junit.Test;
 
 import pp.block2.cc.AST;
+import pp.block2.cc.LQRParser;
 import pp.block2.cc.ParseException;
 import pp.block2.cc.Parser;
-import pp.block2.cc.ll.GenericLLParser;
-import pp.block2.cc.ll.Grammars;
-import pp.block2.cc.ll.Sentence;
-import pp.block2.cc.ll.SentenceParser;
+import pp.block2.cc.ll.*;
 
 public class GenericLLParserTest {
 	private Parser parser1;
@@ -35,6 +33,16 @@ public class GenericLLParserTest {
 		fails("all undergraduate students love all compilers");
 		fails("all undergraduate students love love.");
 		fails("all undergraduate students all compilers.");
+	}
+
+	@Test
+	public void testLQR() {
+		this.lexerType = LQR.class;
+		this.parser1 = new LQRParser();
+		this.parser2 = new GenericLLParser(Grammars.makeLQR());
+		compare("cababcbca");
+		compare("abaa");
+		fails("bbcca");
 	}
 
 	private void fails(String text) {
