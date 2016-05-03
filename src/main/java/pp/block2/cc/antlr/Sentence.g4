@@ -1,7 +1,5 @@
 grammar Sentence;
 
-@header{package pp.block2.cc.antlr;}
-
 /** Full sentence: the start symbol of the grammar. */
 sentence: subject VERB object ENDMARK;
 /** Grammatical subject in a sentence. */

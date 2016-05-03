@@ -54,4 +54,27 @@ public class Grammars {
         g.addRule(elsepart, Symbol.EMPTY);
         return g;
     }
+
+	public static Grammar makeLQR() {
+		NonTerm l = new NonTerm("L");
+		NonTerm r = new NonTerm("R");
+		NonTerm q = new NonTerm("Q");
+		NonTerm h = new NonTerm("H");
+		NonTerm ra = new NonTerm("Ra");
+		SymbolFactory fact = new SymbolFactory(LQR.class);
+		Term a = fact.getTerminal(LQR.A);
+		Term b = fact.getTerminal(LQR.B);
+		Term c = fact.getTerminal(LQR.C);
+		Grammar g = new Grammar(l);
+		g.addRule(l, r, a);
+		g.addRule(l, q, b, a);
+		g.addRule(r, a, b, a, ra);
+		g.addRule(r, c, a, b, a, ra);
+		g.addRule(ra, b, c, ra);
+		g.addRule(ra, Symbol.EMPTY);
+		g.addRule(q, b, h);
+		g.addRule(h, b, c);
+		g.addRule(h, c);
+		return g;
+	}
 }
