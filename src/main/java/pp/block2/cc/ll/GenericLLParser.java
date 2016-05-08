@@ -62,9 +62,8 @@ public class GenericLLParser implements Parser {
 			Token token = next();
 			if (((Term) symb).getTokenType() != token.getType()) {
 				throw (new ParseException("fail"));
-			} else {
-				result = new AST((Term) symb, token);
 			}
+			result = new AST((Term) symb, token);
 		}
         return result;
 	}
@@ -152,6 +151,7 @@ public class GenericLLParser implements Parser {
 		Set<NonTerm> nonTerms = g.getNonterminals();
 		Set<Term> terms = g.getTerminals();
 		List<Rule> rules;
+
 		for (NonTerm nt : nonTerms) {
 			Map<Term, Rule> termRuleMap = new HashMap<>();
 			for (Term t : terms) {

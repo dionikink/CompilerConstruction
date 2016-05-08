@@ -17,6 +17,7 @@ import pp.block2.cc.NonTerm;
 import pp.block2.cc.ParseException;
 import pp.block2.cc.Parser;
 import pp.block2.cc.SymbolFactory;
+import sun.plugin2.os.windows.SECURITY_ATTRIBUTES;
 
 public class SentenceParser implements Parser {
 	public SentenceParser() {
@@ -127,6 +128,11 @@ public class SentenceParser implements Parser {
 	}
 
 	private int index;
+
+	public static NonTerm getSent() {return SENT;}
+	public static NonTerm getSubj() {return SUBJ;}
+	public static NonTerm getObj() {return OBJ;}
+	public static NonTerm getMod() {return MOD;}
 
 	private static final NonTerm SENT = new NonTerm("Sentence");
 	private static final NonTerm SUBJ = new NonTerm("Subject");

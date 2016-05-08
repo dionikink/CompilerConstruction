@@ -55,6 +55,7 @@ public class LLCalcTest {
         Set<Term> followElsePart = new HashSet<>();
         followElsePart.add(eof);
         followElsePart.add(elsse);
+
 		assertEquals(followStat, follow.get(stat));
         assertEquals(followElsePart, follow.get(elsePart));
 
