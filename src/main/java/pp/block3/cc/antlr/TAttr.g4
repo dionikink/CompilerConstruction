@@ -64,7 +64,7 @@ t returns [ Type type ]
     | t0=t PLUS t1=t
     { $type = getPlus($t0.text, $t1.text); }
     | t0=t EQUALS t1=t
-    { $type = Type.BOOL; }
+    { $type = getEquals($to.text, $t1.text); }
     | LPAR t0=t RPAR
     { $type = $t0.type; }
     | NUM
