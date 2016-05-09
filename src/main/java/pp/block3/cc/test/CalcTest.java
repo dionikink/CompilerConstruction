@@ -28,6 +28,8 @@ public class CalcTest {
 		test(5, "3+2");
 		test(7, "1+2*3");
 		test(9, "(1+2)*3");
+		test(-1, "1+-2");
+		test(-11, "-5 + -6");
 	}
 
 	private void test(int expected, String expr) {
@@ -35,6 +37,7 @@ public class CalcTest {
 		ParseTree tree = parseCalc(expr);
 		this.calc.init();
 		this.walker.walk(this.calc, tree);
+
 		assertEquals(expected, this.calc.val(tree));
 	}
 

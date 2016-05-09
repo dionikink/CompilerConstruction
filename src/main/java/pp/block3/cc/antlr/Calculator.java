@@ -23,6 +23,11 @@ public class Calculator extends CalcBaseListener {
 	}
 
 	@Override
+	public void exitMinus(CalcParser.MinusContext ctx) {
+		set(ctx, -1 * val(ctx.expr()));
+	}
+
+	@Override
 	public void exitNumber(NumberContext ctx) {
 		set(ctx, Integer.parseInt(ctx.NUMBER().getText()));
 	}
