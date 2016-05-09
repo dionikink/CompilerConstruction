@@ -14,7 +14,7 @@ public class SymbolTableTest {
 
 	@Before
 	public void initTable() {
-		table = // construct an instance of your implementation
+		//table =
 	}
 
 	@Test

@@ -1,7 +1,5 @@
 grammar DeclUse;
 
-@header{package pp.block3.cc.symbol;}
-
 program : '(' series ')' ;
 series  : unit* ;
 unit    : decl | use | '(' series ')' ;
