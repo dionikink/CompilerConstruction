@@ -43,10 +43,10 @@ t returns [ Type val ]
       { $val = getEqualsType($t0.val, $t1.val); }
     | LPAR t0=t RPAR
       { $val = $t0.val); }
-    | BOOL
-      { $val = Type.BOOL; }
     | NUM
       { $val = Type.NUM; }
+    | BOOL
+      { $val = Type.BOOL; }
     | STR
       { $val = Type.STR; }
     ;
