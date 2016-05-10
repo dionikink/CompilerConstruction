@@ -17,14 +17,13 @@ public class Calculator extends CalcBaseListener {
 		this.vals = new ParseTreeProperty<Integer>();
 	}
 
-	@Override
-	public void exitPar(ParContext ctx) {
-		set(ctx, val(ctx.expr()));
+	public void visitErrorNode() {
+
 	}
 
 	@Override
-	public void exitMinus(CalcParser.MinusContext ctx) {
-		set(ctx, -1 * val(ctx.expr()));
+	public void exitPar(ParContext ctx) {
+		set(ctx, val(ctx.expr()));
 	}
 
 	@Override
