@@ -42,7 +42,7 @@ t returns [ Type val ]
     | t0=t EQUALS t1=t
       { $val = getEqualsType($t0.val, $t1.val); }
     | LPAR t0=t RPAR
-      { $val = $t0.val); }
+      { $val = $t0.val; }
     | NUM
       { $val = Type.NUM; }
     | BOOL
