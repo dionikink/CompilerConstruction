@@ -8,13 +8,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import pp.block3.cc.symbol.SymbolTable;
+import pp.block3.cc.symbol.SymbolTablert;
 
 public class SymbolTableTest {
 	private SymbolTable table;
 
 	@Before
 	public void initTable() {
-		//table =
+		table = new SymbolTablert();
 	}
 
 	@Test
