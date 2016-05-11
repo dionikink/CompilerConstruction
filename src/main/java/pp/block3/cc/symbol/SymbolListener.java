@@ -12,67 +12,12 @@ import java.util.ArrayList;
  * Created by Jens on 10-5-2016.
  *
  */
-public class SymbolListener implements DeclUseListener {
+public class SymbolListener extends DeclUseBaseListener {
 
     private ParseTreeProperty<String> errors;
 
     public SymbolListener() {
         this.errors = new ParseTreeProperty<>();
-    }
-
-    @Override
-    public void enterProgram(DeclUseParser.ProgramContext ctx) {
-
-    }
-
-    @Override
-    public void exitProgram(DeclUseParser.ProgramContext ctx) {
-
-    }
-
-    @Override
-    public void enterSeries(DeclUseParser.SeriesContext ctx) {
-
-    }
-
-    @Override
-    public void exitSeries(DeclUseParser.SeriesContext ctx) {
-
-    }
-
-    @Override
-    public void enterUnit(DeclUseParser.UnitContext ctx) {
-
-    }
-
-    @Override
-    public void exitUnit(DeclUseParser.UnitContext ctx) {
-
-    }
-
-    @Override
-    public void enterDecl(DeclUseParser.DeclContext ctx) {
-
-    }
-
-    @Override
-    public void exitDecl(DeclUseParser.DeclContext ctx) {
-
-    }
-
-    @Override
-    public void enterUse(DeclUseParser.UseContext ctx) {
-
-    }
-
-    @Override
-    public void exitUse(DeclUseParser.UseContext ctx) {
-
-    }
-
-    @Override
-    public void visitTerminal(TerminalNode terminalNode) {
-
     }
 
     @Override
@@ -82,18 +27,13 @@ public class SymbolListener implements DeclUseListener {
         setError(errorNode, errorMessage);
     }
 
-    @Override
-    public void enterEveryRule(ParserRuleContext parserRuleContext) {
-
-    }
-
-    @Override
-    public void exitEveryRule(ParserRuleContext parserRuleContext) {
-
-    }
-
-    public ArrayList<String> getErrors() {
+    public ArrayList<String> getErrors(ParseTree root) {
         ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < root.getChildCount(); i++) {
+            if (errors.get(root.getChild(i)) != null) {
+                result.add(errors.get(root.getChild(i)));
+            }
+        }
         return result;
     }
 
