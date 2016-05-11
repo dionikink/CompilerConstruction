@@ -14,6 +14,10 @@ public class Latex extends LatexBaseListener {
 
     private PrintWriter writer;
 
+    public static void main(String[] args) {
+
+    }
+
     public void init(String fileName) {
         try {
             this.writer = new PrintWriter(fileName + ".html", "UTF-8");
@@ -26,8 +30,17 @@ public class Latex extends LatexBaseListener {
         this.writer.close();
     }
 
-    @Override public void exitTable(LatexParser.TableContext ctx) {
+    @Override
+    public void enterTable(LatexParser.TableContext ctx) {
+        writer.println("<html>");
+        writer.println("<body>");
+        writer.println("<table border = \"1\">");
+    }
 
+    @Override public void exitTable(LatexParser.TableContext ctx) {
+        writer.println("</table>");
+        writer.println("</body>");
+        writer.println("</html>");
     }
 
     @Override public void exitArguments(LatexParser.ArgumentsContext ctx) {
@@ -35,11 +48,22 @@ public class Latex extends LatexBaseListener {
     }
 
     @Override public void exitTablerow(LatexParser.TablerowContext ctx) {
+        writer.println("</tr>");
+    }
 
+    @Override
+    public void enterTablerow(LatexParser.TablerowContext ctx) {
+        writer.println("<tr>");
+    }
+
+    @Override
+    public void enterRowcontent(LatexParser.RowcontentContext ctx) {
+        writer.println("<td>");
+        writer.println(ctx.CONTENT().getText());
     }
 
     @Override public void exitRowcontent(LatexParser.RowcontentContext ctx) {
-
+        writer.println("</td>");
     }
 
     @Override public void visitTerminal(TerminalNode node) {
