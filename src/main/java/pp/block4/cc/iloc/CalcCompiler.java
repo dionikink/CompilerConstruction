@@ -51,7 +51,7 @@ public class CalcCompiler extends CalcBaseListener {
 		throw new UnsupportedOperationException("Fill in");
 	}
 
-	/** Constructs an operation from the parameters 
+	/** Constructs an operation from the parameters
 	 * and adds it to the program under construction. */
 	private void emit(OpCode opCode, Operand... args) {
 		this.prog.addInstr(new Op(opCode, args));

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
-
 import pp.iloc.Assembler;
 import pp.iloc.Simulator;
 import pp.iloc.eval.Machine;
