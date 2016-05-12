@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import pp.block4.cc.ErrorListener;
 import pp.block4.cc.cfg.FragmentParser.BreakStatContext;
 import pp.block4.cc.cfg.FragmentParser.ContStatContext;
@@ -19,6 +21,9 @@ import pp.block4.cc.cfg.FragmentParser.ProgramContext;
 public class TopDownCFGBuilder extends FragmentBaseListener {
 	/** The CFG being built. */
 	private Graph graph;
+
+    private ParseTreeProperty<Node> beginNodes;
+    private ParseTreeProperty<Node> endNodes;
 
 	/** Builds the CFG for a program contained in a given file. */
 	public Graph build(File file) {
@@ -51,8 +56,11 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 	/** Builds the CFG for a program given as an ANTLR parse tree. */
 	public Graph build(ProgramContext tree) {
 		this.graph = new Graph();
-		// TODO Fill in
-		throw new UnsupportedOperationException("Fill in");
+		this.beginNodes = new ParseTreeProperty<>();
+        this.endNodes = new ParseTreeProperty<>();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(this, tree);
+        return graph;
 	}
 
 	@Override public void enterProgram(ProgramContext ctx) {
