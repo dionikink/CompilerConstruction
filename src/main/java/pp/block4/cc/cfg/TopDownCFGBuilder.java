@@ -55,6 +55,34 @@ public class TopDownCFGBuilder extends FragmentBaseListener {
 		throw new UnsupportedOperationException("Fill in");
 	}
 
+	@Override public void enterProgram(ProgramContext ctx) {
+
+	}
+
+	@Override public void enterDecl(FragmentParser.DeclContext ctx) {
+
+	}
+
+	@Override public void enterIfStat(FragmentParser.IfStatContext ctx) {
+
+	}
+
+	@Override public void enterAssignStat(FragmentParser.AssignStatContext ctx) {
+
+	}
+
+	@Override public void enterWhileStat(FragmentParser.WhileStatContext ctx) {
+
+	}
+
+	@Override public void enterBlockStat(FragmentParser.BlockStatContext ctx) {
+
+	}
+
+	@Override public void enterPrintStat(FragmentParser.PrintStatContext ctx) {
+
+	}
+
 	@Override
 	public void enterBreakStat(BreakStatContext ctx) {
 		throw new IllegalArgumentException("Break not supported");
