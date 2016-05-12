@@ -1,7 +1,5 @@
 grammar Calc;
 
-@header{package pp.block4.cc.iloc;}
-
 /** Complete expression. */
 complete
 	: expr EOF
