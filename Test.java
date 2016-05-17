@@ -7,3 +7,5 @@ while (i < a.length) {
     i = i + 1;
 }
 printf("Max: %d%n", max);
+
+// CC.6.3: The multiplication is needed for the new address of the next integer.

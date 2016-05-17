@@ -22,7 +22,7 @@ public class FindTest {
 	@Test
 	//(timeout = 1000)
 	public void simulate() {
-		Program p = assemble("pp/block4/cc/iloc/find");
+		Program p = assemble("find");
 		if (SHOW) {
 			System.out.println(p.prettyPrint());
 		}
@@ -43,6 +43,7 @@ public class FindTest {
 		if (SHOW) {
 			System.out.println(vm);
 		}
+		System.out.println(vm.getNum("alength"));
 		assertEquals(output, vm.getReg("r_i"));
 	}
 

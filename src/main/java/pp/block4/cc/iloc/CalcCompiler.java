@@ -47,8 +47,8 @@ public class CalcCompiler extends CalcBaseListener {
 
 	/** Compiles a given Calc-parse tree into an ILOC program. */
 	public Program compile(ParseTree tree) {
-		// TODO Fill in
-		throw new UnsupportedOperationException("Fill in");
+
+		return null;
 	}
 
 	/** Constructs an operation from the parameters

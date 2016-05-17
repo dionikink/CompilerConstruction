@@ -1,7 +1,5 @@
 grammar ILOC;
 
-@header{package pp.iloc.parse;}
-
 fragment LETTER: [a-zA-Z];
 fragment DIGIT: [0-9];
 
