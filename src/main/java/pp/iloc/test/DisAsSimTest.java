@@ -1,4 +1,4 @@
-package pp.block4.cc.test;
+package pp.iloc.test;
 
 import org.junit.Test;
 import pp.iloc.Assembler;
