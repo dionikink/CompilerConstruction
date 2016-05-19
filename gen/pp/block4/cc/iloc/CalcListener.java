@@ -1,4 +1,4 @@
-// Generated from C:/Users/Dion/Documents/TI/Module 8/Compiler Construction/src/main/java/pp/block4/cc/iloc\Calc.g4 by ANTLR 4.5.1
+// Generated from C:/Users/Jens/IdeaProjects/CompilerConstruction/src/main/java/pp/block4/cc/iloc\Calc.g4 by ANTLR 4.5.1
 package pp.block4.cc.iloc;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
