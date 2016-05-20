@@ -24,6 +24,9 @@ public class LLCalcert implements LLCalc {
 
     @Override
     public Map<Symbol, Set<Term>> getFirst() {
+        System.out.println("===========================================================");
+        System.out.println("\t\t\tFIRST SET");
+        System.out.println("===========================================================");
         Map<Symbol, Set<Term>> result = new HashMap<>();
 
         List<Rule> rules = grammar.getRules();
@@ -43,6 +46,8 @@ public class LLCalcert implements LLCalc {
         while (change) {
             change = false;
             for (Rule r : rules) {
+                System.out.println("Validating rule: " + r);
+                System.out.println("So first of: " + r.getLHS());
                 List<Symbol> rhsList = r.getRHS();
                 Set<Term> rhs = new HashSet<>();
                 int j;
@@ -77,24 +82,36 @@ public class LLCalcert implements LLCalc {
                         rhs.add(Symbol.EMPTY);
                     }
                     if (!result.get(r.getLHS()).containsAll(rhs)) {
+                        System.out.println("------------------------------");
+                        System.out.println("Adding: " + rhs);
                         Set<Term> newRHS = result.get(r.getLHS());
                         newRHS.addAll(rhs);
+                        System.out.println("Result after adding: " + newRHS);
+                        System.out.println("------------------------------");
                         change = true;
                     }
                 }
             }
         }
         this.setFirstMap(result);
+        System.out.println("===========================================================");
+        System.out.println("\t\t\tFIRST SET");
+        System.out.println("===========================================================");
         return result;
     }
 
     @Override
     public Map<NonTerm, Set<Term>> getFollow() {
+        System.out.println("===========================================================");
+        System.out.println("\t\t\tFOLLOW SET");
+        System.out.println("===========================================================");
+
         Map<NonTerm, Set<Term>> result = new HashMap<>();
         Set<NonTerm> nonTerms = grammar.getNonterminals();
         List<Rule> rules = grammar.getRules();
-        Map<Symbol, Set<Term>> first = getFirst();
-
+        if (first == null) {
+            getFirst();
+        }
         for (NonTerm nt : nonTerms) {
             result.put(nt, new HashSet<>());
         }
@@ -107,7 +124,7 @@ public class LLCalcert implements LLCalc {
         while (change) {
             change = false;
             for (Rule r : rules) {                                      // For each p in P
-
+                System.out.println("Validating rule: " + r);
                 Set<Term> trailer = new HashSet<>();
                 trailer.addAll(result.get(r.getLHS()));             // Trailer <- Follow(A)
                 List<Symbol> rhsList = r.getRHS();
@@ -121,6 +138,12 @@ public class LLCalcert implements LLCalc {
                             Set<Term> followB = new HashSet<>();
                             followB.addAll(result.get(rhsList.get(i)));
                             followB.addAll(trailer);
+                            System.out.println("-----------------------------");
+                            System.out.println("Appending follow set of: " + rhsList.get(i));
+                            System.out.println("-----------------------------");
+                            System.out.println("Added from trailer: " + trailer);
+                            System.out.println("Result is now: " + followB);
+                            System.out.println("-----------------------------");
                             change = true;
                             result.replace((NonTerm)rhsList.get(i), followB);
                         }
@@ -139,6 +162,9 @@ public class LLCalcert implements LLCalc {
                 }
             }
         }
+        System.out.println("===========================================================");
+        System.out.println("\t\t\tFOLLOW SET");
+        System.out.println("===========================================================");
         this.setFollowMap(result);
         return result;
     }
