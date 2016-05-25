@@ -70,10 +70,10 @@ public class DisAsSimTest {
             new Simulator(p, c).run();
             assertEquals(55, c.getReg("r_z"));
         } else if (test.equals("of")) {
-            c.setNum("n", 47);
+            c.setNum("n", 45);
             new Simulator(p, c).run();
             assertTrue(0 < c.getReg("r_z"));
-            System.out.println("Value of n: " + 47);
+            System.out.println("Value of n: " + 45);
             System.out.println("Fib: " + c.getReg("r_z"));
             c = new Machine();
             c.setNum("n", 48);

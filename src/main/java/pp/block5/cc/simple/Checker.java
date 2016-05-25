@@ -8,8 +8,11 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
 import pp.block5.cc.ParseException;
 import pp.block5.cc.pascal.SimplePascalBaseListener;
+import pp.block5.cc.pascal.SimplePascalParser;
+
 /** Class to type check and calculate flow entries and variable offsets. */
 public class Checker extends SimplePascalBaseListener {
 	/** Result of the latest call of {@link #check}. */
@@ -35,8 +38,9 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	// Override the listener methods for the statement nodes
+
 	@Override
-	public void exitBoolExpr(BoolExprContext ctx) {
+	public void exitBoolExpr(SimplePascalParser.BoolExprContext ctx) {
 		checkType(ctx.expr(0), Type.BOOL);
 		checkType(ctx.expr(1), Type.BOOL);
 		setType(ctx, Type.BOOL);
@@ -44,7 +48,7 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	@Override
-	public void exitCompExpr(CompExprContext ctx) {
+	public void exitCompExpr(SimplePascalParser.CompExprContext ctx) {
 		checkType(ctx.expr(0), Type.INT);
 		checkType(ctx.expr(1), Type.INT);
 		setType(ctx, Type.BOOL);
@@ -52,13 +56,13 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	@Override
-	public void exitFalseExpr(FalseExprContext ctx) {
+	public void exitFalseExpr(SimplePascalParser.FalseExprContext ctx) {
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, ctx);
 	}
 
 	@Override
-	public void exitIdExpr(IdExprContext ctx) {
+	public void exitIdExpr(SimplePascalParser.IdExprContext ctx) {
 		String id = ctx.ID().getText();
 		Type type = this.scope.type(id);
 		if (type == null) {
@@ -71,7 +75,7 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	@Override
-	public void exitMultExpr(MultExprContext ctx) {
+	public void exitMultExpr(SimplePascalParser.MultExprContext ctx) {
 		checkType(ctx.expr(0), Type.INT);
 		checkType(ctx.expr(1), Type.INT);
 		setType(ctx, Type.INT);
@@ -79,19 +83,19 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	@Override
-	public void exitNumExpr(NumExprContext ctx) {
+	public void exitNumExpr(SimplePascalParser.NumExprContext ctx) {
 		setType(ctx, Type.INT);
 		setEntry(ctx, ctx);
 	}
 
 	@Override
-	public void exitParExpr(ParExprContext ctx) {
+	public void exitParExpr(SimplePascalParser.ParExprContext ctx) {
 		setType(ctx, getType(ctx.expr()));
 		setEntry(ctx, entry(ctx.expr()));
 	}
 
 	@Override
-	public void exitPlusExpr(PlusExprContext ctx) {
+	public void exitPlusExpr(SimplePascalParser.PlusExprContext ctx) {
 		checkType(ctx.expr(0), Type.INT);
 		checkType(ctx.expr(1), Type.INT);
 		setType(ctx, Type.INT);
@@ -99,7 +103,7 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	@Override
-	public void exitPrfExpr(PrfExprContext ctx) {
+	public void exitPrfExpr(SimplePascalParser.PrfExprContext ctx) {
 		Type type;
 		if (ctx.prfOp().MINUS() != null) {
 			type = Type.INT;
@@ -113,9 +117,63 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	@Override
-	public void exitTrueExpr(TrueExprContext ctx) {
+	public void exitTrueExpr(SimplePascalParser.TrueExprContext ctx) {
 		setType(ctx, Type.BOOL);
 		setEntry(ctx, ctx);
+	}
+
+	@Override public void exitBody(SimplePascalParser.BodyContext ctx) {
+		if (entry(ctx.block().stat(0)) != null) {
+			setEntry(ctx.block(), entry(ctx.block().stat(0)));
+		}
+	}
+
+	@Override public void exitAssStat(SimplePascalParser.AssStatContext ctx) {
+		setType(ctx.target(), getType(ctx.expr()));
+		setEntry(ctx, entry(ctx.expr()));
+		setOffset(ctx.target(), scope.offset(ctx.target().getText()));
+	}
+
+	@Override public void exitIfStat(SimplePascalParser.IfStatContext ctx) {
+		if (getType(ctx.expr()) != Type.BOOL) {
+			addError(ctx, "Type of expression '%s' is not Boolean.", ctx.expr().getText());
+		}
+		setEntry(ctx, entry(ctx.expr()));
+		setType(ctx, getType(ctx.stat(0)));
+	}
+
+	@Override public void exitWhileStat(SimplePascalParser.WhileStatContext ctx) {
+		setEntry(ctx, entry(ctx.expr()));
+		setType(ctx, getType(ctx.stat()));
+	}
+
+	@Override public void exitBlockStat(SimplePascalParser.BlockStatContext ctx) {
+		setEntry(ctx, entry(ctx.block().stat(0)));
+	}
+
+	@Override public void exitIdTarget(SimplePascalParser.IdTargetContext ctx) {
+		setEntry(ctx, ctx);
+	}
+
+	@Override public void exitVarDecl(SimplePascalParser.VarDeclContext ctx) {
+		for (int i = 0; i < ctx.var().size(); i++) {
+			for (int j = 0; j < ctx.var(i).ID().size(); j++) {
+				setType(ctx.var(i).ID(j), getType(ctx.var(i).type()));
+				this.scope.put(ctx.var(i).ID(j).getText(), getType(ctx.var(i).type()));
+			}
+		}
+	}
+
+	@Override public void exitBoolType(SimplePascalParser.BoolTypeContext ctx) {
+		setType(ctx, Type.BOOL);
+	}
+
+	@Override public void exitIntType(SimplePascalParser.IntTypeContext ctx) {
+		setType(ctx, Type.INT);
+	}
+
+	@Override public void visitTerminal(TerminalNode node) {
+
 	}
 
 	/** Indicates if any errors were encountered in this tree listener. */
@@ -144,7 +202,7 @@ public class Checker extends SimplePascalBaseListener {
 	}
 
 	/** Records an error at a given parse tree node.
-	 * @param ctx the parse tree node at which the error occurred
+	 * @param node the parse tree node at which the error occurred
 	 * @param message the error message
 	 * @param args arguments for the message, see {@link String#format}
 	 */

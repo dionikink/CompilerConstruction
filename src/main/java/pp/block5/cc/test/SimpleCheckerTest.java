@@ -37,6 +37,7 @@ public class SimpleCheckerTest {
 		Result result = check(tree);
 		ParseTree body = tree.getChild(3).getChild(1);
 		ParseTree assX = body.getChild(1);
+
 		assertEquals(assX.getChild(2), result.getEntry(assX));
 		assertEquals(assX.getChild(2), result.getEntry(body));
 	}
@@ -76,7 +77,7 @@ public class SimpleCheckerTest {
 	}
 
 	private ParseTree parse(String filename) throws IOException, ParseException {
-		return this.compiler.parse(new File(BASE_DIR, filename + EXT));
+		return this.compiler.parse(new File(filename + EXT));
 	}
 
 	private Result check(ParseTree tree) throws ParseException {

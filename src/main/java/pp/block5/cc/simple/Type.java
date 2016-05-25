@@ -1,6 +1,6 @@
 package pp.block5.cc.simple;
 
-import pp.block6.cc.func.TypeKind;
+//import pp.block6.cc.func.TypeKind;
 import pp.iloc.eval.Machine;
 
 /** Pascal data type. */
