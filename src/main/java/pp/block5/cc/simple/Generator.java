@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 import pp.block5.cc.pascal.SimplePascalBaseVisitor;
+import pp.block5.cc.pascal.SimplePascalParser;
 import pp.iloc.Simulator;
 import pp.iloc.model.Label;
 import pp.iloc.model.Num;
@@ -14,6 +15,9 @@ import pp.iloc.model.OpCode;
 import pp.iloc.model.Operand;
 import pp.iloc.model.Program;
 import pp.iloc.model.Reg;
+
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+
 /** Class to generate ILOC code for Simple Pascal. */
 public class Generator extends SimplePascalBaseVisitor<Op> {
 	/** The representation of the boolean value <code>false</code>. */
@@ -48,6 +52,175 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	}
 
 	// Override the visitor methods
+	@Override public Op visitProgram(SimplePascalParser.ProgramContext ctx) {
+		createLabel(ctx, "start");
+		return visitChildren(ctx);
+	}
+
+	@Override public Op visitBody(SimplePascalParser.BodyContext ctx) { return visitChildren(ctx); }
+
+	@Override public Op visitVarDecl(SimplePascalParser.VarDeclContext ctx) {
+
+		return visitChildren(ctx);
+	}
+
+	@Override public Op visitVar(SimplePascalParser.VarContext ctx) {
+		return visitChildren(ctx);
+	}
+
+	@Override public Op visitBlock(SimplePascalParser.BlockContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitAssStat(SimplePascalParser.AssStatContext ctx) {
+
+		return visitChildren(ctx);
+	}
+
+	@Override public Op visitIfStat(SimplePascalParser.IfStatContext ctx) {
+
+		return visitChildren(ctx);
+	}
+
+	@Override public Op visitWhileStat(SimplePascalParser.WhileStatContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitBlockStat(SimplePascalParser.BlockStatContext ctx) { return visitChildren(ctx); }
+
+	@Override public Op visitInStat(SimplePascalParser.InStatContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitOutStat(SimplePascalParser.OutStatContext ctx) { return visitChildren(ctx); }
+
+	@Override public Op visitPrfExpr(SimplePascalParser.PrfExprContext ctx) {
+		Op op = null;
+		if (checkResult.getType(ctx.expr()) == Type.INT) {
+			op = emit(OpCode.mult, new Num(-1), reg(ctx.expr()), reg(ctx.expr()));
+		} else if (checkResult.getType(ctx.expr()) == Type.BOOL) {
+			op = emit(OpCode.xor, TRUE_VALUE, reg(ctx.expr()), reg(ctx.expr()));
+		}
+		return op;
+	}
+
+	@Override public Op visitParExpr(SimplePascalParser.ParExprContext ctx) {
+		return visit(ctx.expr());
+	}
+
+	@Override public Op visitBoolExpr(SimplePascalParser.BoolExprContext ctx) {
+		visit(ctx.expr(0));
+		visit(ctx.expr(1));
+		Op bool = visit(ctx.boolOp());
+		Reg reg = newReg();
+		Reg e0 = reg(ctx.expr(0));
+		Reg e1 = reg(ctx.expr(1));
+		setReg(ctx, reg);
+		return emit(bool.getOpCode(), e0, e1, reg);
+	}
+
+	@Override public Op visitCompExpr(SimplePascalParser.CompExprContext ctx) {
+		visit(ctx.expr(0));
+		visit(ctx.expr(1));
+		Op comp = visit(ctx.compOp());
+		Reg reg = newReg();
+		Reg e0 = reg(ctx.expr(0));
+		Reg e1 = reg(ctx.expr(1));
+		setReg(ctx, reg);
+		return emit(comp.getOpCode(), e0, e1, reg);	}
+
+	@Override public Op visitPlusExpr(SimplePascalParser.PlusExprContext ctx) {
+		visit(ctx.expr(0));
+		visit(ctx.expr(1));
+		Op op = visit(ctx.plusOp());
+		Reg reg = newReg();
+		Reg e0 = reg(ctx.expr(0));
+		Reg e1 = reg(ctx.expr(1));
+		setReg(ctx, reg);
+		return emit(op.getOpCode(), e0, e1, reg);
+	}
+
+	@Override public Op visitMultExpr(SimplePascalParser.MultExprContext ctx) {
+		visit(ctx.expr(0));
+		visit(ctx.expr(1));
+		Op op = visit(ctx.multOp());
+		Reg reg = newReg();
+		Reg e0 = reg(ctx.expr(0));
+		Reg e1 = reg(ctx.expr(1));
+		setReg(ctx, reg);
+		return emit(op.getOpCode(), e0, e1, reg);
+	}
+
+	@Override public Op visitNumExpr(SimplePascalParser.NumExprContext ctx) {
+		Reg reg = newReg();
+		Num num = new Num(Integer.parseInt(ctx.getText()));
+		setReg(ctx, reg);
+		return emit(OpCode.loadI, num, reg);
+	}
+
+	@Override public Op visitIdExpr(SimplePascalParser.IdExprContext ctx) {
+		Reg reg = newReg();
+		System.out.println(ctx.getText());
+		System.out.println(offset(ctx));
+		setReg(ctx, reg);
+		return emit(OpCode.loadAI, arp, offset(ctx), reg);
+	}
+
+	@Override public Op visitTrueExpr(SimplePascalParser.TrueExprContext ctx) {
+		Reg reg = newReg();
+		setReg(ctx, reg);
+		return emit(OpCode.loadI, TRUE_VALUE, reg);
+	}
+
+	@Override public Op visitFalseExpr(SimplePascalParser.FalseExprContext ctx) {
+		Reg reg = newReg();
+		setReg(ctx, reg);
+		return emit(OpCode.loadI, FALSE_VALUE, reg);
+	}
+
+	@Override public Op visitMultOp(SimplePascalParser.MultOpContext ctx) {
+		Op op = null;
+		if (ctx.SLASH() != null) {
+			op = new Op(OpCode.div, null, null, null);
+		} else if (ctx.STAR() != null) {
+			op = new Op(OpCode.mult, null, null, null);
+		}
+		return op;
+	}
+
+	@Override public Op visitPlusOp(SimplePascalParser.PlusOpContext ctx) {
+		Op op = null;
+		if (ctx.PLUS() != null) {
+			op = new Op(OpCode.add, null, null, null);
+		} else if (ctx.MINUS() != null) {
+			op = new Op(OpCode.sub, null, null, null);
+		}
+		return op;
+	}
+
+	@Override public Op visitBoolOp(SimplePascalParser.BoolOpContext ctx) {
+		Op op = null;
+		if (ctx.AND() != null) {
+			op = new Op(OpCode.and, null, null, null);
+		} else if (ctx.OR() != null) {
+			op = new Op(OpCode.or, null, null, null);
+		}
+		return op;
+	}
+
+	@Override public Op visitCompOp(SimplePascalParser.CompOpContext ctx) {
+		Op op = null;
+		if (ctx.LE() != null) {
+			op = new Op(OpCode.cmp_LE, null, null, null);
+		} else if (ctx.LT() != null) {
+			op = new Op(OpCode.cmp_LT, null, null, null);
+		} else if (ctx.GE() != null) {
+			op = new Op(OpCode.cmp_GE, null, null, null);
+		} else if (ctx.GT() != null) {
+			op = new Op(OpCode.cmp_GT, null, null, null);
+		} else if (ctx.EQ() != null) {
+			op = new Op(OpCode.cmp_EQ, null, null, null);
+		} else if (ctx.NE() != null) {
+			op = new Op(OpCode.cmp_NE, null, null, null);
+		}
+		return op;
+	}
+	/*
+	@Override public Op visitIntType(SimplePascalParser.IntTypeContext ctx) { return visitChildren(ctx); }
+	@Override public Op visitBoolType(SimplePascalParser.BoolTypeContext ctx) { return visitChildren(ctx); }*/
+
+
 	/** Constructs an operation from the parameters 
 	 * and adds it to the program under construction. */
 	private Op emit(Label label, OpCode opCode, Operand... args) {
@@ -108,5 +281,11 @@ public class Generator extends SimplePascalBaseVisitor<Op> {
 	/** Assigns a register to a given parse tree node. */
 	private void setReg(ParseTree node, Reg reg) {
 		this.regs.put(node, reg);
+	}
+
+	private Reg newReg() {
+		Reg reg = new Reg("r_"+regCount);
+		regCount++;
+		return reg;
 	}
 }

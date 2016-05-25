@@ -17,7 +17,6 @@ import pp.iloc.model.Program;
 
 @SuppressWarnings("javadoc")
 public class SimpleGeneratorTest {
-	private final static String BASE_DIR = "pp/block5/cc/sample";
 	private final static String EXT = ".pascal";
 	private final SimplePascalCompiler compiler = SimplePascalCompiler
 			.instance();
@@ -41,7 +40,7 @@ public class SimpleGeneratorTest {
 	}
 
 	private Program compile(String filename) throws IOException, ParseException {
-		return this.compiler.compile(new File(BASE_DIR, filename + EXT));
+		return this.compiler.compile(new File(filename + EXT));
 	}
 
 	private String sim(Program prog, String input) {
