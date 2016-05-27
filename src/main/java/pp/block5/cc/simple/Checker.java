@@ -172,8 +172,12 @@ public class Checker extends SimplePascalBaseListener {
 		setType(ctx, Type.INT);
 	}
 
-	@Override public void visitTerminal(TerminalNode node) {
+	@Override public void exitInStat(SimplePascalParser.InStatContext ctx) {
+		setEntry(ctx, ctx);
+	}
 
+	@Override public void exitOutStat(SimplePascalParser.OutStatContext ctx) {
+		setEntry(ctx, ctx);
 	}
 
 	/** Indicates if any errors were encountered in this tree listener. */

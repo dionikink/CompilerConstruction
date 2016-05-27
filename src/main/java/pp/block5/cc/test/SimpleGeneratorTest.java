@@ -2,6 +2,7 @@ package pp.block5.cc.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,8 +13,10 @@ import org.junit.Test;
 
 import pp.block5.cc.ParseException;
 import pp.block5.cc.SimplePascalCompiler;
+import pp.iloc.Assembler;
 import pp.iloc.Simulator;
 import pp.iloc.model.Program;
+import pp.iloc.parse.FormatException;
 
 @SuppressWarnings("javadoc")
 public class SimpleGeneratorTest {

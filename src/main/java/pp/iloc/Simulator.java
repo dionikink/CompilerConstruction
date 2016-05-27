@@ -288,6 +288,7 @@ public class Simulator {
 					}
 				}
 			} while (val == Integer.MAX_VALUE);
+
 			c.setReg(1, val);
 			break;
 		case out:
